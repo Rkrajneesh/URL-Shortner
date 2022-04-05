@@ -3,14 +3,7 @@ require('mongoose-type-url');
 const shortid = require('shortid')
 
 const urlSchema = new mongoose.Schema({
-    urlCode: {
-        type: String,
-        default :shortid.generate(),
-         required: true,
-         unique: true,
-        lowercase: true,
-        trim: true,
-    },
+ 
     longUrl: {
         type: mongoose.SchemaTypes.Url,
         required: true,
@@ -20,6 +13,13 @@ const urlSchema = new mongoose.Schema({
         type: String,
         required: true,
        // unique: true,
+    },   urlCode: {
+        type: String,
+        default :shortid.generate(),
+         required: true,
+         unique: true,
+        lowercase: true,
+        trim: true,
     },
 });
 module.exports = mongoose.model("url", urlSchema)
