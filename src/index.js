@@ -32,7 +32,7 @@ const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
-mongoose.connect("mongodb+srv://Rajneesh:LMPiDV0VO2cXL7Qg@cluster0.wdu0f.mongodb.net/RProject?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://Rajneesh:LMPiDV0VO2cXL7Qg@cluster0.wdu0f.mongodb.net/group21Databasee?retryWrites=true&w=majority",
 {useNewUrlparser:true},
 {useUnifiedTopology: true}
 )

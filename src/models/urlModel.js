@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-require('mongoose-type-url');
-const shortid = require('shortid')
+const mongoose = require("mongoose")
+const url =require('mongoose-type-url')
 
 const urlSchema = new mongoose.Schema({
  
@@ -12,14 +11,15 @@ const urlSchema = new mongoose.Schema({
     shortUrl: {
         type: String,
         required: true,
-       // unique: true,
+        unique: true,
     },   urlCode: {
         type: String,
-        default :shortid.generate(),
          required: true,
          unique: true,
         lowercase: true,
         trim: true,
     },
-});
+},
+    // {timestamps:true}
+);
 module.exports = mongoose.model("url", urlSchema)
