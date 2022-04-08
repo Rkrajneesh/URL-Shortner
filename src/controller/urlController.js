@@ -38,8 +38,8 @@ const ShortUrl = async (req,res)=> {
 try{    const data = req.body
         const {longUrl} = data
         if(!valid(longUrl)){ return res.status(400).send({status :false , msg : "Enter longUrl"})}
-       if (!validUrl.isUri(longUrl)) {return res.status(401).send({status :false, msg :'Invalid longUrl URL'})}
-       console.log(longUrl)
+       if (!validUrl.isUri(longUrl)) {return res.status(400).send({status :false, msg :'Invalid longUrl URL'})}
+
       let cachee = await GET_ASYNC(`${longUrl}`)
         if(cachee){ return res.status(200).send( {status :true ,data : JSON.parse(cachee)})}
 
@@ -58,7 +58,7 @@ try{    const data = req.body
         if(valid(urlCode)){   Data["urlCode"] = urlCode }
 const url = await urlModel.create(Data)
 
- const ab = await SET_ASYNC(`${url.longUrl}`,JSON.stringify(url)) 
+  await SET_ASYNC(`${url.longUrl}`,JSON.stringify(url)) 
 return  res.status(201).send({status :true , msg :url})
         
 
