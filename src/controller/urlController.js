@@ -41,12 +41,12 @@ try{    const data = req.body
        if (!validUrl.isUri(longUrl)) {return res.status(400).send({status :false, msg :'Invalid longUrl URL'})}
 
       let cachee = await GET_ASYNC(`${longUrl}`)
-        if(cachee){ return res.status(200).send( {status :true ,data : JSON.parse(cachee)})}
+        if(cachee){ return res.status(201).send( {status :true ,data : JSON.parse(cachee)})}
 
        const ExistLUrl = await urlModel.findOne({longUrl : longUrl}).select({_id :0, __v :0})
-        if(ExistLUrl) { return res.status(200).send({status : true , msg :ExistLUrl})}
+        if(ExistLUrl) { return res.status(201).send({status : true , msg :ExistLUrl})}
 
-        const urlCode = shortid.generate()
+        const urlCode = shortid.generate(longUrl)
         const ExistUrl = await urlModel.findOne({urlCode : urlCode})
         if(ExistUrl) { return res.status(400).send({status :false ,msg :"UrlCode Alredy Exist"})}
 
@@ -59,6 +59,7 @@ try{    const data = req.body
 const url = await urlModel.create(Data)
 
   await SET_ASYNC(`${url.longUrl}`,JSON.stringify(url)) 
+//  await SET_ASYNC(`${url.urlCode}`,JSON.stringify(url.longUrl)) 
 return  res.status(201).send({status :true , msg :url})
         
 
@@ -72,7 +73,7 @@ const getUrl = async (req,res) =>{
     try {
         
        const urlCode = req.params.urlCode
-       if(urlCode.length != 9){ return res.status(400).send({status :false ,msg:'This url is not valid.Enter valid url'})}
+      // if(urlCode.length != 9){ return res.status(404).send({status :false ,msg:'This url is not valid.Enter valid url'})}
        
       let cachee = await GET_ASYNC(`${urlCode}`)
       if(cachee){ return res.status(302).redirect( JSON.parse(cachee))}
@@ -81,11 +82,13 @@ const getUrl = async (req,res) =>{
       if (!url) {return res.status(404).send({status :false , msg :'No URL Found with this short url .Enter valid url'}) }
       
       await SET_ASYNC(`${urlCode}`,JSON.stringify(url.longUrl))
-      return res.status(302).redirect(url.longUrl)
+      return res.status(302).redirect(  url.longUrl)
   
     } catch (err) { console.error(err)
         res.status(500).send({status:false ,msg: err}) } 
   }
+
+
 
 
 
