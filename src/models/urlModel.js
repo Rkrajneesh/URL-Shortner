@@ -4,7 +4,7 @@ const url =require('mongoose-type-url')
 const urlSchema = new mongoose.Schema({
  
     longUrl: {
-        type: mongoose.SchemaTypes.Url,
+        type: String,
         required: true,
         //  valid url
     },

@@ -38,7 +38,7 @@ const ShortUrl = async (req,res)=> {
 try{    const data = req.body
         const {longUrl} = data
         if(!valid(longUrl)){ return res.status(400).send({status :false , msg : "Enter longUrl"})}
-       if (!validUrl.isUri(longUrl)) {return res.status(401).send({status :false, msg :'Invalid base URL'})}
+       if (!validUrl.isUri(longUrl)) {return res.status(401).send({status :false, msg :'Invalid longUrl URL'})}
        console.log(longUrl)
       let cachee = await GET_ASYNC(`${longUrl}`)
         if(cachee){ return res.status(200).send( {status :true ,data : JSON.parse(cachee)})}
