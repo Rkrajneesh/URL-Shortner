@@ -1,7 +1,7 @@
 const urlModel = require("../models/urlModel.js")
 const validUrl = require('valid-url')
 const shortid = require('shortid')
-const cache = require("../middleware/mid")
+//const cache = require("../middleware/mid")
 const redis = require("redis");
 
 const { promisify } = require("util");
@@ -9,6 +9,7 @@ const { promisify } = require("util");
 
 //Connect to redis
 const redisClient = redis.createClient(
+  
   17592,  "redis-17592.c264.ap-south-1-1.ec2.cloud.redislabs.com", { no_ready_check: true } );
 redisClient.auth("4L5rYcxzqFug0rsYukR9PkW7fpsXyUsX", function (err) { if (err) throw err })
 redisClient.on("connect", async function () {  console.log("Connected to Redis..") })
@@ -38,18 +39,16 @@ try{    const data = req.body
         const {longUrl} = data
         if(!valid(longUrl)){ return res.status(400).send({status :false , msg : "Enter longUrl"})}
       //  if (!validUrl.isUri(longUrl)) {return res.status(401).send({status :false, msg :'Invalid base URL'})}
-      
+       console.log(longUrl)
       let cachee = await GET_ASYNC(`${longUrl}`)
-        if(cachee){ return res.status(302).send( {status :true ,data : JSON.parse(cachee)})}
+        if(cachee){ return res.status(200).send( {status :true ,data : JSON.parse(cachee)})}
 
-       const ExistLUrl = await urlModel.findOne({longUrl : longUrl}).select({_id :0, __v :0})
+  const ExistLUrl = await urlModel.findOne({longUrl : longUrl}).select({_id :0, __v :0})
         if(ExistLUrl) { return res.status(200).send({status : true , msg :ExistLUrl})}
 
         const urlCode = shortid.generate()
         const ExistUrl = await urlModel.findOne({urlCode : urlCode})
         if(ExistUrl) { return res.status(400).send({status :false ,msg :"UrlCode Alredy Exist"})}
-
-
 
         const shortUrl = baseUrl + '/' + urlCode
         const Data = {}
@@ -57,14 +56,10 @@ try{    const data = req.body
         if(valid(longUrl)){   Data["longUrl"] = longUrl}
         if(valid(shortUrl)){   Data["shortUrl"] = shortUrl }
         if(valid(urlCode)){   Data["urlCode"] = urlCode }
+const url = await urlModel.create(Data)
 
-                   
-       const url = await urlModel.create(Data)
-
-
-        await SET_ASYNC(`${url.longUrl}`,JSON.stringify(url)) 
-
-        return  res.status(201).send({status :true , msg :url})
+ const ab = await SET_ASYNC(`${url.longUrl}`,JSON.stringify(url)) 
+return  res.status(201).send({status :true , msg :url})
         
 
 } catch(err){ 
